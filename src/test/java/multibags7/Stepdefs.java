@@ -11,17 +11,12 @@ import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.Select;
 
-import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -49,7 +44,8 @@ public class Stepdefs {
 
     @Quando("ele envia aciona a opção de enviar a mensagem para o e-commerce")
     public void ele_envia_aciona_a_opção_de_enviar_a_mensagem_para_o_e_commerce() {
-        driver.findElement(By.id("submitContact")).click();
+        JavascriptExecutor executor = (JavascriptExecutor)driver;
+        executor.executeScript("arguments[0].click();", driver.findElement(By.id("submitContact")));
     }
 
     @Entao("o sistema deve apresentar uma mensagem de envio de contato com sucesso")
@@ -91,11 +87,11 @@ public class Stepdefs {
 
     @Then("o sistema deve apresentar a tela de dashboard do cliente")
     public void o_sistema_deve_apresentar_a_tela_de_dashboard_do_cliente() {
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        new WebDriverWait(driver,10L).until(new ExpectedCondition<Boolean>() {
+            public Boolean apply(WebDriver driver) {
+                return driver.getCurrentUrl().startsWith("http://multibags.1dt.com.br/shop/customer/dashboard.html");
+            }
+        });
     }
 
     @Given("João acessou o menu My Account")
@@ -122,9 +118,13 @@ public class Stepdefs {
         Select drpCountry = new Select(driver.findElement(By.id("registration_country")));
         drpCountry.selectByValue("BR");
         driver.findElement(By.id("hidden_zones")).sendKeys("São Paulo");
-        driver.findElement(By.id("emailAddress")).sendKeys("sabrinateste@teste.com.br");
+        driver.findElement(By.id("emailAddress")).sendKeys(gerarEmail());
         driver.findElement(By.id("password")).sendKeys("teste123");
         driver.findElement(By.id("passwordAgain")).sendKeys("teste123");
+    }
+
+    private String gerarEmail() {
+        return UUID.randomUUID().toString().toLowerCase().replace("-", "") + "_grupo7@teste.com.br";
     }
 
     @Then("o sistema deve criar a conta")
@@ -134,8 +134,7 @@ public class Stepdefs {
 
     @Then("redirecionar João para o dashboard")
     public void redirecionar_João_para_o_dashboard() {
-        String URL = driver.getCurrentUrl();
-        URL.contains("http://multibags.1dt.com.br/shop/customer/dashboard.html");
+        assertTrue(driver.getCurrentUrl().startsWith("http://multibags.1dt.com.br/shop/customer/dashboard.html"));
     }
 
     @When("João preenche os dados incorretamente")
@@ -190,21 +189,12 @@ public class Stepdefs {
 
     @When("clica em change password")
     public void clica_em_change_password() {
-        try {
-            Thread.sleep(50);
-            driver.findElement(By.id("submitChangePassword")).click();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        JavascriptExecutor executor = (JavascriptExecutor)driver;
+        executor.executeScript("arguments[0].click();", driver.findElement(By.id("submitChangePassword")));
     }
 
     @Then("o sistema deve apresentar uma mensagem de senha alterada com sucesso")
     public void o_sistema_deve_apresentar_uma_mensagem_de_senha_alterada_com_sucesso() {
-        /*new WebDriverWait(driver,10L).until(new ExpectedCondition<Boolean>() {
-            public Boolean apply(WebDriver driver) {
-                return driver.findElement(By.id("store.success")).getText().equals("Request completed with success");
-            }
-        });*/
         driver.findElement(By.id("store.success")).getText().equals("Request completed with success");
     }
 
@@ -229,7 +219,6 @@ public class Stepdefs {
     @Then("uma mensagem sobre a falha será mostrada")
     public void uma_mensagem_sobre_a_falha_será_mostrada() {
         boolean submitButton = driver.findElement(By.id("formError")).isDisplayed();
-
         Assert.assertEquals(true, submitButton);
     }
 

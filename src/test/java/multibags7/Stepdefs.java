@@ -228,4 +228,9 @@ public class Stepdefs {
         WebElement carrinho = driver.findElement(By.xpath("/html/body/header/div[2]/div/div/div[3]/div[2]/div[1]/a/font/strong"));
         Assert.assertEquals("1", carrinho.getAttribute("value"));
     }
+
+    @After()
+    public void closeBrowser() {
+        driver.quit();
+    }
 }

@@ -215,32 +215,17 @@ public class Stepdefs {
     @Given("que Joao esta na tela de bolsas")
     public void que_Joao_esta_na_tela_de_bolsas() {
         driver.get("http://multibags.1dt.com.br/shop/category/handbags.html");
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-
-        WebElement myDynamicElement = (new WebDriverWait(driver, 10))
-                .until(ExpectedConditions.presenceOfElementLocated(By.className("addToCart")));
     }
 
-    public void scrollSmooth(int pixels){
-        for(int i = 0; i < pixels; i++) {
-            ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,1)", "");
-        }
-    }
 
     @When("Joao adiciona uma bolsa ao carrinho")
     public void Joao_adiciona_uma_bolsa_ao_carrinho() {
-        scrollSmooth(50);
-
-        List<WebElement> buttons = driver.findElements(By.className("addToCart"));
-        WebElement query_enquirymode = buttons.get(2);
-        query_enquirymode.click();
+        driver.findElements(By.className("store-btn-addtocart")).get(0).click();
     }
 
     @Then("o carrinho deve ter 1 item")
     public void o_carrinho_deve_ter_1_item(){
-        String quantidade = "1";
         WebElement carrinho = driver.findElement(By.xpath("/html/body/header/div[2]/div/div/div[3]/div[2]/div[1]/a/font/strong"));
-
-        Assert.assertEquals(quantidade, carrinho.getAttribute("value"));
+        Assert.assertEquals("1", carrinho.getAttribute("value"));
     }
 }

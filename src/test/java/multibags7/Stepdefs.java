@@ -9,14 +9,19 @@ import cucumber.api.java.pt.Entao;
 import cucumber.api.java.pt.Quando;
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.Select;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -207,8 +212,20 @@ public class Stepdefs {
         driver.findElement(By.cssSelector("#genericLogin-button")).click();
     }
 
-    @After()
-    public void closeBrowser() {
-        driver.quit();
+    @Given("que Joao esta na tela de bolsas")
+    public void que_Joao_esta_na_tela_de_bolsas() {
+        driver.get("http://multibags.1dt.com.br/shop/category/handbags.html");
+    }
+
+
+    @When("Joao adiciona uma bolsa ao carrinho")
+    public void Joao_adiciona_uma_bolsa_ao_carrinho() {
+        driver.findElements(By.className("store-btn-addtocart")).get(0).click();
+    }
+
+    @Then("o carrinho deve ter 1 item")
+    public void o_carrinho_deve_ter_1_item(){
+        WebElement carrinho = driver.findElement(By.xpath("/html/body/header/div[2]/div/div/div[3]/div[2]/div[1]/a/font/strong"));
+        Assert.assertEquals("1", carrinho.getAttribute("value"));
     }
 }

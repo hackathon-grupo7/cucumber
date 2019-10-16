@@ -181,6 +181,13 @@ public class Stepdefs {
         driver.findElement(By.id("checkPassword")).sendKeys("123456");
     }
 
+    @When("ela preenche o formulário de alteração de senhas com dados inválidos")
+    public void ela_preenche_o_formulário_de_alteração_de_senhas_com_dados_inválidos() {
+        driver.findElement(By.id("currentPassword")).sendKeys("sabrina@teste.com.br");
+        driver.findElement(By.id("password")).sendKeys("123456");
+        driver.findElement(By.id("checkPassword")).sendKeys("321456");
+    }
+
     @When("clica em change password")
     public void clica_em_change_password() {
         try {
@@ -201,6 +208,13 @@ public class Stepdefs {
         driver.findElement(By.id("store.success")).getText().equals("Request completed with success");
     }
 
+    @Then("o sistema desabilita o botão de submissão do formulário")
+    public void o_sistem_desabilita_o_botão_de_submissão_do_formulário() {
+        boolean submitButton = driver.findElement(By.id("submitChangePassword")).isEnabled();
+
+        Assert.assertEquals(false, submitButton);
+    }
+
     @Then("a senha deve estar alterada")
     public void a_senha_deve_estar_alterada() {
         driver.findElement(By.partialLinkText("Logout")).click();
@@ -212,21 +226,11 @@ public class Stepdefs {
         driver.findElement(By.cssSelector("#genericLogin-button")).click();
     }
 
-    @Given("que Joao esta na tela de bolsas")
-    public void que_Joao_esta_na_tela_de_bolsas() {
-        driver.get("http://multibags.1dt.com.br/shop/category/handbags.html");
-    }
+    @Then("uma mensagem sobre a falha será mostrada")
+    public void uma_mensagem_sobre_a_falha_será_mostrada() {
+        boolean submitButton = driver.findElement(By.id("formError")).isDisplayed();
 
-
-    @When("Joao adiciona uma bolsa ao carrinho")
-    public void Joao_adiciona_uma_bolsa_ao_carrinho() {
-        driver.findElements(By.className("store-btn-addtocart")).get(0).click();
-    }
-
-    @Then("o carrinho deve ter 1 item")
-    public void o_carrinho_deve_ter_1_item(){
-        WebElement carrinho = driver.findElement(By.xpath("/html/body/header/div[2]/div/div/div[3]/div[2]/div[1]/a/font/strong"));
-        Assert.assertEquals("1", carrinho.getAttribute("value"));
+        Assert.assertEquals(true, submitButton);
     }
 
     @After()

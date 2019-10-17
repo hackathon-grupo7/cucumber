@@ -154,7 +154,7 @@ public class Stepdefs {
 
     @Then("identificar os campos inválidos")
     public void identificar_os_campos_inválidos() {
-        driver.findElement(By.className("error"));
+        assertTrue(driver.findElements(By.className("error")).size() !=0 );
     }
 
     @Given("Sabrina está autenticado em sua conta")
@@ -201,7 +201,6 @@ public class Stepdefs {
     @Then("o sistema desabilita o botão de submissão do formulário")
     public void o_sistem_desabilita_o_botão_de_submissão_do_formulário() {
         boolean submitButton = driver.findElement(By.id("submitChangePassword")).isEnabled();
-
         Assert.assertEquals(false, submitButton);
     }
 
